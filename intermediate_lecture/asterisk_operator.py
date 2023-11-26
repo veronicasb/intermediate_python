@@ -32,6 +32,33 @@ def unpack(a, b, c):
 # when unpacking arguments, the number of elements and/or keys must match parameters
 myls = [1, 2, 3]
 unpack(*myls)
+myls = [1, 2, 3, 4, 5]
+unpack(*myls[0: 3])
 mydict = {'a': 1, 'b': 2, 'c': 3}
 unpack(**mydict)
 
+numbers = [1, 2, 3, 4, 5, 6]
+*beginning, last = numbers
+print(beginning)
+print(last)
+
+*beginning, second_last, last = numbers
+print(beginning)
+print(second_last)
+print(last)
+
+numbers = [1, 2, 3, 4, 5, 6]
+beginning, *last = numbers
+print(beginning)
+print(last)
+
+mytuple = (1, 2, 3)
+myls = [4, 5, 6]
+
+newls = [*mytuple, *myls]
+print(newls)
+
+dicta = {'a': 1, 'b': 2}
+dictb = {'d': 3, 'e': 4}
+newdict = {**dicta, **dictb}
+print(newdict)
