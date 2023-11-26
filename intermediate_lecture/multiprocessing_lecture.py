@@ -1,10 +1,9 @@
-from multiprocessing import Process, Value, Array, Lock, Queue
+from multiprocessing import Process, Value, Array, Lock, Queue, Pool
 import os
 import time
 
 
 # creating and starting multiple processes (recap)
-
 '''
 def square_numbers():
     for i in range(1000):
@@ -33,15 +32,13 @@ if __name__ == "__main__":
 
 # sharing data between processes
 # using locks to prevent race conditions
-# using queues (must be from multiprocessing module; for process-safe data exchanges)
-# using process pool to manage multiple processes
 # threading: share data using a global variable
 '''
 processes: since processes dont exist in the same memory space, they dont have access 
 to the same public data, so they need special memory objects --> a Value (for a single value) 
 or an Array (for multiple values)
 '''
-
+'''
 def add_100(nums, lock):
     for i in range(100):
         time.sleep(0.01)
@@ -67,7 +64,57 @@ if __name__ == "__main__":
 
     print("Array at end", shared_array[:])
 
+'''
 
+# using queues (must be from multiprocessing module; for process-safe data exchanges)
+'''
+def square(nums, q):
+    for i in nums:
+        q.put(i * i)
 
+def make_negative(nums, q):
+    for i in nums:
+        q.put(-1 * i)
 
+if __name__ == "__main__":
+    q = Queue()
+    nums = range(1, 6)
+
+    p1 = Process(target=square, args=(nums, q))
+    p2 = Process(target=make_negative, args=(nums, q))
+
+    p1.start()
+    p2.start()
+
+    p1.join()
+    p2.join()
+
+    while not q.empty():
+        print(q.get())
+
+'''
+
+# using process pool to manage multiple processes
+
+def cube(num):
+    return num**3
+
+if __name__ == "__main__":
+
+    pool = Pool()
+    nums = range(10)
+
+    # map, apply, join, close
+
+    # map - automatically allocates max number of available processes
+    # splits iterable into equal-sized chunks
+    result = pool.map(cube, nums)
+
+    # this executes process using one element at a time
+    pool.apply(cube, nums[0])
+    
+    pool.close()
+    pool.join()
+
+    print(result)
 
